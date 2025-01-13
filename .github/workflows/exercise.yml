@@ -33,15 +33,14 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Use the GitHub-provided action to set up inputs
-      - name: Set up inputs
-        run: echo "Number1: ${{ github.event.inputs.number1 }}, Number2: ${{ github.event.inputs.number2 }}"
-      
-      # Add the numbers
+      # Add the numbers and save the result to an environment variable
       - name: Add numbers
         id: sum
-        run: echo "::set-output name=sum::$(( ${{ github.event.inputs.number1 }} + ${{ github.event.inputs.number2 }} ))"
+        run: |
+          echo $(( ${{ github.event.inputs.number1 }} + ${{ github.event.inputs.number2 }}) ) > sum.txt
+          sum=$(cat sum.txt)
+          echo "sum=$sum" >> $GITHUB_ENV
 
       # Display the sum
       - name: Display sum
-        run: echo "The sum of ${{ github.event.inputs.number1 }} and ${{ github.event.inputs.number2 }} is ${{ steps.sum.outputs.sum }}"
+        run: echo "The sum of ${{ github.event.inputs.number1 }} and ${{ github.event.inputs.number2 }} is ${{ env.sum }}"
